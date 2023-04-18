@@ -14,8 +14,8 @@ try:
 
     bucket_name = "ams561_bucket_creditcardfraud"
 
-    train = gcp_csv_to_df(bucket_name,'fraudTrain.csv').iloc[:2500]
-    test = gcp_csv_to_df(bucket_name,'fraudTest.csv').iloc[:2500]
+    train = gcp_csv_to_df(bucket_name,'fraudTrain.csv')
+    test = gcp_csv_to_df(bucket_name,'fraudTest.csv')
 
     date_time_transform(train)
     date_time_transform(test)
