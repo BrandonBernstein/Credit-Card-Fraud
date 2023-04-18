@@ -12,23 +12,23 @@ models = {"Logistic Regression": LogisticRegression(),
 
 param_grid = {"Logistic Regression": {
 
-    "C": np.logspace(-5, 5, 10),
+    # "C": np.logspace(-5, 5, 10),
     "max_iter": [10000]
 },
 
     "Gradient Boost Forest": {
 
         "learning_rate": (0.01, 0.05, 0.10, 0.15),
-        "max_depth": [3, 4, 5, 6, 8],
-        "min_child_weight": [1, 5, 15],
-        "gamma": [0.0, 0.1, 0.2],
+        # "max_depth": [3, 4, 5, 6, 8],
+        # "min_child_weight": [1, 5, 15],
+        # "gamma": [0.0, 0.1, 0.2],
 
     },
 
     "Support Vector": {
 
         'kernel': ['linear', 'poly', 'rbf'],
-        'C': np.logspace(-5, 5, 10)
+        # 'C': np.logspace(-5, 5, 10)
 
     }
 
