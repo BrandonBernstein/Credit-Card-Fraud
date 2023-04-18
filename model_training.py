@@ -37,7 +37,9 @@ param_grid = {"Logistic Regression": {
 
 def model_evaluation(X, y, models, param_grid, cv=5):
     try:
-
+        best_model = None
+        best_params = None
+        best_roc_test = 0
         results = {}
 
         X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, test_size=0.1,
@@ -59,9 +61,15 @@ def model_evaluation(X, y, models, param_grid, cv=5):
             roc_auc_train = metrics.roc_auc_score(y_train, model.predict(X_train))
             roc_auc_test = metrics.roc_auc_score(y_test, model.predict(X_test))
 
+
             results[model_keys[i]] = (roc_auc_train,roc_auc_test)
 
-        return results
+            if roc_auc_test > best_roc_test:
+                best_roc_test = roc_auc_test
+                best_model = model
+                best_params = grid_search.best_params_
+
+        return results, best_model, best_params
 
     except Exception as e:
         print(traceback.format_exc())

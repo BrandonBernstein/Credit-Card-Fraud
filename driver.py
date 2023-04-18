@@ -3,7 +3,7 @@ from model_training import model_evaluation, models, param_grid
 from data_transformation import date_time_transform, adjust_data, DataTransform
 from logger import logging
 from exception import ProjectException
-from utils import gcp_csv_to_df
+from utils import gcp_csv_to_df, save_pickle, upload_blob
 import sys
 import os
 
@@ -12,8 +12,10 @@ try:
     key = "animated-flare-383117-3112c7a8d011.json"
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.path.join(os.getcwd(),'key',key)
 
-    train = gcp_csv_to_df('ams561_bucket_creditcardfraud','fraudTrain.csv')
-    test = gcp_csv_to_df('ams561_bucket_creditcardfraud','fraudTest.csv')
+    bucket_name = "ams561_bucket_creditcardfraud"
+
+    train = gcp_csv_to_df(bucket_name,'fraudTrain.csv').iloc[:2500]
+    test = gcp_csv_to_df(bucket_name,'fraudTest.csv').iloc[:2500]
 
     date_time_transform(train)
     date_time_transform(test)
@@ -42,11 +44,17 @@ try:
     logging.info(f"Testing data transformation has been completed with shape {X_test.shape}")
 
     logging.info("Model evaluation has begun.")
-    results = model_evaluation(X_train,y_train, models, param_grid)
+    results, model = model_evaluation(X_train,y_train, models, param_grid, cv = 2)
     logging.info("Model evaluation has ended.")
 
-    print(results.items())
+    model_path = os.path.join("model","final model")
+    save_pickle(model, model_path)
 
+    logging.info(f"Best model has been serialized and saved to: {model_path}")
+
+    upload_blob(bucket_name, "model", "Credit Card Fraud")
+
+    logging.info(f"Model has been uploaded to bucket {bucket_name}/Credit Card Fraud/")
 
 except Exception as e:
 
