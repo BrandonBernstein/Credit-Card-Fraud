@@ -12,25 +12,25 @@ models = {"Logistic Regression": LogisticRegression(),
 
 param_grid = {"Logistic Regression": {
 
-    # "C": np.logspace(-5, 5, 10),
+    "C": np.logspace(-5, 5, 10),
     "max_iter": [10000]
 },
 
     "Gradient Boost Forest": {
 
-        "learning_rate": (0.01, 0.05, 0.10, 0.15),
-        # "max_depth": [3, 4, 5, 6, 8],
-        # "min_child_weight": [1, 5, 15],
-        # "gamma": [0.0, 0.1, 0.2],
+        "learning_rate": (0.01, 0.05, 0.10),
+        "max_depth": [3, 4, 5],
+        "min_child_weight": [5, 10],
+        "gamma": [0.0, 0.1, 0.2],
 
     },
 
-    "Support Vector": {
+#     "Support Vector": {
 
-        'kernel': ['linear', 'poly', 'rbf'],
-        # 'C': np.logspace(-5, 5, 10)
+#         'kernel': ['linear', 'poly', 'rbf'],
+#         'C': np.logspace(-5, 5, 10)
 
-    }
+#     }
 
 }
 
@@ -48,6 +48,9 @@ def model_evaluation(X, y, models, param_grid, cv=5):
         y_test = np.array(y_test).ravel()
 
         for i in range(0, len(list(models))):
+            
+            logging.info(f"{models} has finished training.")
+            
             model_keys, model_classes = list(models.keys()), list(models.values())
             model = model_classes[i]
             params = param_grid[model_keys[i]]

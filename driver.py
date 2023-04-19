@@ -44,15 +44,20 @@ try:
     logging.info(f"Testing data transformation has been completed with shape {X_test.shape}")
 
     logging.info("Model evaluation has begun.")
-    results, model = model_evaluation(X_train,y_train, models, param_grid, cv = 2)
+    
+    results, model, model_params = model_evaluation(X_train,y_train, models, param_grid, cv = 2)
+    
     logging.info("Model evaluation has ended.")
-
+    logging.info(f"Evaluation results are: {results}")
+    logging.info(f"Choosen model is: {model_params}")
+    
+    os.makedirs('model', exist_ok = True)
     model_path = os.path.join("model","final model")
     save_pickle(model, model_path)
 
     logging.info(f"Best model has been serialized and saved to: {model_path}")
-
-    upload_blob(bucket_name, "model", "Credit Card Fraud")
+    
+    upload_blob(bucket_name, os.path.join("model","final model.pickle"), "model")
 
     logging.info(f"Model has been uploaded to bucket {bucket_name}/Credit Card Fraud/")
 
