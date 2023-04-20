@@ -4,11 +4,13 @@ from sklearn import metrics
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from xgboost import XGBClassifier
+from logger import logging
 import traceback
 
 models = {"Logistic Regression": LogisticRegression(),
           "Gradient Boost Forest": XGBClassifier(),
-          "Support Vector": SVC()}
+          #"Support Vector": SVC()
+         }
 
 param_grid = {"Logistic Regression": {
 
@@ -19,8 +21,8 @@ param_grid = {"Logistic Regression": {
     "Gradient Boost Forest": {
 
         "learning_rate": (0.01, 0.05, 0.10),
-        "max_depth": [3, 4, 5],
-        "min_child_weight": [5, 10],
+        "max_depth": [3, 4, 5, 6],
+        "min_child_weight": [5, 10, 15],
         "gamma": [0.0, 0.1, 0.2],
 
     },
@@ -48,14 +50,12 @@ def model_evaluation(X, y, models, param_grid, cv=5):
         y_test = np.array(y_test).ravel()
 
         for i in range(0, len(list(models))):
-            
-            logging.info(f"{models} has finished training.")
-            
+                        
             model_keys, model_classes = list(models.keys()), list(models.values())
             model = model_classes[i]
             params = param_grid[model_keys[i]]
 
-            grid_search = model_selection.GridSearchCV(model, params, cv=5)
+            grid_search = model_selection.GridSearchCV(model, params, cv=cv)
             grid_search.fit(X, y)
 
             model.set_params(**grid_search.best_params_)
@@ -65,7 +65,7 @@ def model_evaluation(X, y, models, param_grid, cv=5):
             roc_auc_test = metrics.roc_auc_score(y_test, model.predict(X_test))
 
 
-            results[model_keys[i]] = (roc_auc_train,roc_auc_test)
+            results[model] = (roc_auc_train,roc_auc_test)
 
             if roc_auc_test > best_roc_test:
                 best_roc_test = roc_auc_test

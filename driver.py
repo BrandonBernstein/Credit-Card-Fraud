@@ -45,7 +45,7 @@ try:
 
     logging.info("Model evaluation has begun.")
     
-    results, model, model_params = model_evaluation(X_train,y_train, models, param_grid, cv = 2)
+    results, model, model_params = model_evaluation(X_train,y_train, models, param_grid, cv = 10)
     
     logging.info("Model evaluation has ended.")
     logging.info(f"Evaluation results are: {results}")
