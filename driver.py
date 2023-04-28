@@ -1,3 +1,8 @@
+"""
+Main driver component for this project. Carries out data loading, transformation, model training, uploading and
+logging.
+"""
+
 import pandas as pd
 from model_training import model_evaluation, models, param_grid
 from data_transformation import date_time_transform, adjust_data, DataTransform

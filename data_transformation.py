@@ -26,7 +26,7 @@ def adjust_data(data: pd.DataFrame, columns: [] = ['first', 'last', 'street', 'c
                                                    'merchant', 'city', 'state', 'job', 'zip'],
                 adjust: [] = ['lat', 'long'], degree=2):
     """
-    Drops sensitive and non sensitive data contained in the data excluding time variables.
+    Drops sensitive and non-sensitive data contained in the data excluding time variables.
     If columns or adjust is empty then drops/adjusts pre assumed variables.
 
     data: Data Frame to be adjusted
@@ -46,11 +46,22 @@ def adjust_data(data: pd.DataFrame, columns: [] = ['first', 'last', 'street', 'c
 
 class DataTransform:
 
+    """
+    Applies numerical and categorical variable transformations to specified columns for training features.
+    Uses a StandardScaler for numeric features under a column transformer pipeline.
+    Uses one hot encoding for categorical features under a column transformer pipeline.
+    """
+
     def __init__(self):
         self.num_col = ['amt', 'lat', 'long', 'city_pop', 'unix_time', 'merch_lat', 'merch_long']
         self.cat_col = ['category', 'gender', 'trans_year', 'trans_month', 'trans_week_day']
 
     def get_column_transformer(self):
+
+        """
+        Creates column transformer.
+        """
+
         num_pipe = Pipeline(
             steps=[
                 ("scaler", StandardScaler())
@@ -68,6 +79,9 @@ class DataTransform:
         return column_transformer
 
     def transform_train(self, data: pd.DataFrame):
+        """
+        Transforms and fits using pre set column transformer.
+        """
         self.preprocess = self.get_column_transformer()
 
         data = self.preprocess.fit_transform(data)
@@ -75,6 +89,10 @@ class DataTransform:
         return data
 
     def transform_test(self, data: pd.DataFrame):
+        """
+        Fits data using column transformer initialized in the transform_train method.
+        transform_train must be called first to use this method appropriately.
+        """
         data = self.preprocess.transform(data)
 
         return data
